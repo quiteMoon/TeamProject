@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace WebWorker.Migrations
+namespace WebWorker.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class Addidentitytables : Migration
+    public partial class CreateIdentitytables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

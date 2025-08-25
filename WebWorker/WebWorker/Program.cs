@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebWorker.BLL.Managers.ImageManager;
-using WebWorker.BLL.Managers.ImageService;
 using WebWorker.BLL.Managers.JwtToken;
 using WebWorker.BLL.Services.Account;
 using WebWorker.BLL.Services.User;
@@ -41,7 +40,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgresLocal"));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgresNeon"));
 });
 
 builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
