@@ -71,6 +71,10 @@ namespace WebWorker.BLL.Services.Account
             if (!result.Succeeded)
                 return ServiceResponse.Error("Failed to create user from Google login");
 
+            await AddLoginIfNeededAsync(user, googleUser);
+
+            await _userManager.AddToRoleAsync(user, "User");
+
             var token = await _jwtTokenManager.CrateJwtTokenAsync(user);
             return ServiceResponse.Success("Google login successful", token);
         }
@@ -120,6 +124,8 @@ namespace WebWorker.BLL.Services.Account
 
                 user.Image = fileName;
             }
+
+            await _userManager.AddToRoleAsync(user, "User");
 
             var result = await _userManager.CreateAsync(user, dto.Password);
 
