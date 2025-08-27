@@ -1,33 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebWorker.DAL.Entities;
-using WebWorker.DAL;
 using WebWorker.BLL.Dtos.Category;
+using WebWorker.DAL.Repositories.Category;
 
 namespace WebWorker.BLL.Services.Category
 {
     public class CategoryService : ICategoryService
     {
-        private readonly AppDbContext _context;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryService(AppDbContext context)
+        public CategoryService(ICategoryRepository categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
 
-        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
+        public async Task<List<CategoryDto>> GetAllAsync()
         {
-            return await _context.Categories
+            return await _categoryRepository.GetAll()
                 .Select(c => new CategoryDto
                 {
                     Id = c.Id,
                     Name = c.Name
-                })
-                .ToListAsync();
+                }).ToListAsync();
         }
 
         public async Task<CategoryDto?> GetByIdAsync(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.GetByIdAsync(id);
             if (category == null) return null;
 
             return new CategoryDto
@@ -37,30 +36,23 @@ namespace WebWorker.BLL.Services.Category
             };
         }
 
-        public async Task<CategoryDto> CreateAsync(CreateCategoryDto dto)
+        public async Task<bool> CreateAsync(CreateCategoryDto dto)
         {
             var entity = new CategoryEntity
             {
                 Name = dto.Name
             };
 
-            _context.Categories.Add(entity);
-            await _context.SaveChangesAsync();
-
-            return new CategoryDto
-            {
-                Id = entity.Id,
-                Name = entity.Name
-            };
+            return await _categoryRepository.CreateAsync(entity);
         }
 
         public async Task<CategoryDto?> UpdateAsync(UpdateCategoryDto dto)
         {
-            var entity = await _context.Categories.FindAsync(dto.Id);
+            var entity = await _categoryRepository.GetByIdAsync(dto.Id);
             if (entity == null) return null;
 
             entity.Name = dto.Name;
-            await _context.SaveChangesAsync();
+            await _categoryRepository.UpdateAsync(entity);
 
             return new CategoryDto
             {
@@ -71,12 +63,10 @@ namespace WebWorker.BLL.Services.Category
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity = await _context.Categories.FindAsync(id);
+            var entity = await _categoryRepository.GetByIdAsync(id);
             if (entity == null) return false;
 
-            _context.Categories.Remove(entity);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _categoryRepository.DeleteAsync(entity);
         }
     }
 }

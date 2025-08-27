@@ -5,5 +5,6 @@ namespace WebWorker.BLL.Managers.ImageManager
     public interface IImageManager
     {
         Task<string?> SaveImageAsync(IFormFile image, string directory);
+        void DeleteImage(string fileName, string directory);
     }
 }

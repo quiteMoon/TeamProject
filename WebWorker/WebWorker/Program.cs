@@ -10,6 +10,9 @@ using WebWorker.DAL;
 using WebWorker.DAL.Initializer;
 using WebWorker.DAL.Repositories.User;
 using WebWorker.Data.Entities.Identity;
+using WebWorker.DAL.Repositories.Category;
+using WebWorker.DAL.Repositories.Ingredient;
+using WebWorker.BLL.Services.Ingredient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,13 +28,20 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ?? Реєстрація сервісів
+// ?? Реєстрація репозиторіїв
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+
+// ?? Реєстрація сервісів
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+
+
 builder.Services.AddScoped<IImageManager, ImageManager>();
 builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddControllers();
 
@@ -64,6 +74,9 @@ app.UseSwaggerUI();
 // ?? Статичні файли
 if (!Directory.Exists(PathSettings.ImageDirectory))
     Directory.CreateDirectory(PathSettings.ImageDirectory);
+
+Directory.CreateDirectory(PathSettings.UsersImages);
+Directory.CreateDirectory(PathSettings.IngredientsImages);
 
 app.UseStaticFiles(new StaticFileOptions
 {

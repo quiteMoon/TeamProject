@@ -118,7 +118,7 @@ namespace WebWorker.BLL.Services.Account
 
             if (dto.Image != null)
             {
-                var fileName = await _imageManager.SaveImageAsync(dto.Image, PathSettings.ImageDirectory);
+                var fileName = await _imageManager.SaveImageAsync(dto.Image, PathSettings.UsersImages);
                 if (string.IsNullOrEmpty(fileName))
                     return ServiceResponse.Error("Failed to save user image");
 

@@ -4,16 +4,19 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
+        // Image
     }
 
     public class CreateCategoryDto
     {
         public string Name { get; set; } = null!;
+        // Image
     }
 
     public class UpdateCategoryDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
+        // Image
     }
 }

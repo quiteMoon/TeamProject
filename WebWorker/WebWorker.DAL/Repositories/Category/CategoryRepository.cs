@@ -18,17 +18,13 @@ namespace WebWorker.DAL.Repositories.Category
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(CategoryEntity entity)
         {
-            var entity = await GetByIdAsync(id);
-            if (entity == null)
-                return false;
-
             _context.Categories.Remove(entity);
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public IEnumerable<CategoryEntity> GetAll()
+        public IQueryable<CategoryEntity> GetAll()
             => _context.Categories;
 
         public async Task<CategoryEntity?> GetByIdAsync(int id)

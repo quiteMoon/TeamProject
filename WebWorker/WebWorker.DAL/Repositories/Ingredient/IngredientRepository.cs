@@ -28,7 +28,7 @@ namespace WebWorker.DAL.Repositories.Ingredient
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public IEnumerable<IngredientEntity> GetAll()
+        public IQueryable<IngredientEntity> GetAll()
             => _context.Ingredients;
 
         public async Task<IngredientEntity?> GetByIdAsync(int id)

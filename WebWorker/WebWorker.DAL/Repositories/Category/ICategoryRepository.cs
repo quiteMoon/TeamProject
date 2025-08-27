@@ -6,9 +6,9 @@ namespace WebWorker.DAL.Repositories.Category
     {
         Task<bool> CreateAsync(CategoryEntity entity);
         Task<bool> UpdateAsync(CategoryEntity entity);
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(CategoryEntity entity);
         Task<CategoryEntity?> GetByIdAsync(int id);
         Task<CategoryEntity?> GetByNameAsync(string name);
-        IEnumerable<CategoryEntity> GetAll();
+        IQueryable<CategoryEntity> GetAll();
     }
 }

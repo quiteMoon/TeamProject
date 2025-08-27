@@ -30,12 +30,12 @@ namespace WebWorker.Controllers
             return Ok(category);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
-        {
-            var category = await _categoryService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
+        //{
+        //    var category = await _categoryService.CreateAsync(dto);
+        //    return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
+        //}
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryDto dto)
