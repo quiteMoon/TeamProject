@@ -4,6 +4,7 @@ using WebWorker.BLL.Managers.ImageManager;
 using WebWorker.BLL.Managers.JwtToken;
 using WebWorker.BLL.Services.Account;
 using WebWorker.BLL.Services.User;
+using WebWorker.BLL.Services.Category;
 using WebWorker.BLL.Settings;
 using WebWorker.DAL;
 using WebWorker.DAL.Initializer;
@@ -12,29 +13,25 @@ using WebWorker.Data.Entities.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add CORS policy
-
+// ?? Додаємо CORS (лише один раз)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // фронтенд
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
-// Add services to the container.
-
-// Register repositories and services
+// ?? Реєстрація сервісів
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IImageManager, ImageManager>();
-
 builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddControllers();
 
@@ -56,23 +53,16 @@ builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors();
-
 var app = builder.Build();
 
-app.UseCors(opt =>
-{
-    opt.AllowAnyHeader()
-       .AllowAnyMethod()
-       .AllowCredentials()
-       .WithOrigins(builder.Configuration["ClientAppUrl"]!);
-});
+// ?? Використовуємо CORS
+app.UseCors("AllowFrontend");
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Static Files
-if(!Directory.Exists(PathSettings.ImageDirectory))
+// ?? Статичні файли
+if (!Directory.Exists(PathSettings.ImageDirectory))
     Directory.CreateDirectory(PathSettings.ImageDirectory);
 
 app.UseStaticFiles(new StaticFileOptions
@@ -80,16 +70,11 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(PathSettings.ImageDirectory),
     RequestPath = $"/images"
 });
-//
-
-// Configure the HTTP request pipeline.
-
-app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Seed(); // Call the Seed method to initialize the database with roles and users
+app.Seed(); // Seeder для ролей/користувачів
 
 app.Run();
