@@ -6,7 +6,7 @@ import UserRow from './UserRow';
 import EnvConfig from '../../config/env';
 
 const UsersList : React.FC = () => {
-    const urlGet = `${EnvConfig.API_URL}/api/users/list`;
+    const urlGet = `${EnvConfig.API_URL}/api/User/list`;
 
     const [users, setUsers] = useState<IUserItem[]>([]);
 
@@ -14,7 +14,7 @@ const UsersList : React.FC = () => {
         axios.get(urlGet)
             .then(response => {
                 console.log("Users:", response.data);
-                setUsers(response.data);
+                setUsers(response.data.payload);
             })
             .catch(error => {
                 console.error("Error fetching users:", error);
@@ -60,7 +60,7 @@ const UsersList : React.FC = () => {
                                 </thead>
                                 <tbody className="divide-y divide-black/5 dark:divide-white/10">
                                 {users.map((u) => (
-                                    <UserRow user={u} initials={initials} />
+                                    <UserRow key={u.id} user={u} initials={initials} />
                                 ))}
                                 </tbody>
 

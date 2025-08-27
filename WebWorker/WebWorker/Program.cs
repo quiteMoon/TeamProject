@@ -72,7 +72,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 // Static Files
-if(Directory.Exists(PathSettings.ImageDirectory))
+if(!Directory.Exists(PathSettings.ImageDirectory))
     Directory.CreateDirectory(PathSettings.ImageDirectory);
 
 app.UseStaticFiles(new StaticFileOptions

@@ -3,7 +3,8 @@ import axios from "axios";
 import * as React from "react";
 import EnvConfig from "../../config/env";
 
-const loginByGoogle = useGoogleLogin({
+const Login: React.FC = () => {
+  const loginByGoogle = useGoogleLogin({
       onSuccess: async tokenResponse => {
         const googleToken = tokenResponse.access_token;
         console.log("Google Token:", googleToken);
@@ -13,7 +14,7 @@ const loginByGoogle = useGoogleLogin({
             token: googleToken,
           });
 
-          console.log("Response from server:", response.data);
+          console.log("Response from server:", response.data.payload);
         } 
         catch (error) {
           if (axios.isAxiosError(error)) {
@@ -28,7 +29,6 @@ const loginByGoogle = useGoogleLogin({
       },
   });
 
-const Login: React.FC = () => {
   return (
     <>
         
