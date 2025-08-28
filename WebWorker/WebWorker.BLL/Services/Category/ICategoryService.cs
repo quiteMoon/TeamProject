@@ -4,10 +4,10 @@ namespace WebWorker.BLL.Services.Category
 {
     public interface ICategoryService
     {
-        Task<List<CategoryDto>> GetAllAsync();
-        Task<CategoryDto?> GetByIdAsync(int id);
-        Task<bool> CreateAsync(CreateCategoryDto dto);
-        Task<CategoryDto?> UpdateAsync(UpdateCategoryDto dto);
-        Task<bool> DeleteAsync(int id);
+        Task<ServiceResponse> GetAllAsync();
+        Task<ServiceResponse> GetByIdAsync(int id);
+        Task<ServiceResponse> CreateAsync(CreateCategoryDto dto);
+        Task<ServiceResponse> UpdateAsync(UpdateCategoryDto dto);
+        Task<ServiceResponse> DeleteAsync(int id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebWorker.BLL.Services.Category;
 using WebWorker.BLL.Dtos.Category;
+using WebWorker.BLL.Services;
+using WebWorker.BLL.Services.Category;
 
 namespace WebWorker.Controllers
 {
@@ -18,43 +19,54 @@ namespace WebWorker.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var categories = await _categoryService.GetAllAsync();
-            return Ok(categories);
+            var response = await _categoryService.GetAllAsync();
+            if (!response.IsSuccess)
+                return BadRequest(response);
+
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var category = await _categoryService.GetByIdAsync(id);
-            if (category == null) return NotFound();
-            return Ok(category);
+            var response = await _categoryService.GetByIdAsync(id);
+            if (!response.IsSuccess)
+                return NotFound(response);
+
+            return Ok(response);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
-        //{
-        //    var category = await _categoryService.CreateAsync(dto);
-        //    return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] CreateCategoryDto dto)
+        {
+            var response = await _categoryService.CreateAsync(dto);
+            if (!response.IsSuccess)
+                return BadRequest(response);
+
+            return StatusCode(201, response);
+        }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryDto dto)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateCategoryDto dto)
         {
-            if (id != dto.Id) return BadRequest();
+            if (id != dto.Id)
+                return BadRequest(ServiceResponse.Error("Id mismatch"));
 
-            var updated = await _categoryService.UpdateAsync(dto);
-            if (updated == null) return NotFound();
+            var response = await _categoryService.UpdateAsync(dto);
+            if (!response.IsSuccess)
+                return NotFound(response);
 
-            return Ok(updated);
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _categoryService.DeleteAsync(id);
-            if (!deleted) return NotFound();
+            var response = await _categoryService.DeleteAsync(id);
+            if (!response.IsSuccess)
+                return NotFound(response);
 
-            return NoContent();
+            return Ok(response);
         }
     }
 }
