@@ -19,12 +19,8 @@ namespace WebWorker.DAL.Repositories.Product
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(ProductEntity entity)
         {
-            var entity = await GetByIdAsync(id);
-            if (entity == null)
-                return false;
-
             _context.Products.Remove(entity);
             return await _context.SaveChangesAsync() > 0;
         }
@@ -39,7 +35,7 @@ namespace WebWorker.DAL.Repositories.Product
             => await GetByPredicateAsync(p => p.Name == name);
 
         private async Task<ProductEntity?> GetByPredicateAsync(Expression<Func<ProductEntity, bool>> predicate)
-            => await _context.Products.FirstOrDefaultAsync(predicate);
+            => await _context.Products.Include(p => p.Ingredients).Include(p => p.Categories).FirstOrDefaultAsync(predicate);
 
         public IEnumerable<ProductEntity> GetProductsByCategoryName(string categoryName)
             => GetProductListBy<CategoryEntity>(categoryName, p => p.Categories, c => c.Name);

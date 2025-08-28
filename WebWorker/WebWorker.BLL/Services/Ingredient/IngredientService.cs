@@ -52,7 +52,7 @@ namespace WebWorker.BLL.Services.Ingredient
             if (!string.IsNullOrEmpty(entity.ImageUrl))
                 _imageManager.DeleteImage(entity.ImageUrl, PathSettings.IngredientsImages);
 
-            var result = await _ingredientRepository.DeleteAsync(id);
+            var result = await _ingredientRepository.DeleteAsync(entity);
 
             if (!result)
                 return ServiceResponse.Error("Failed to delete ingredient");

@@ -13,6 +13,8 @@ using WebWorker.Data.Entities.Identity;
 using WebWorker.DAL.Repositories.Category;
 using WebWorker.DAL.Repositories.Ingredient;
 using WebWorker.BLL.Services.Ingredient;
+using WebWorker.DAL.Repositories.Product;
+using WebWorker.BLL.Services.Product;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,8 +34,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // ?? –еЇстрац≥€ серв≥с≥в
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -77,6 +81,8 @@ if (!Directory.Exists(PathSettings.ImageDirectory))
 
 Directory.CreateDirectory(PathSettings.UsersImages);
 Directory.CreateDirectory(PathSettings.IngredientsImages);
+Directory.CreateDirectory(PathSettings.CategoriesImages);
+Directory.CreateDirectory(PathSettings.ProductsImages);
 
 app.UseStaticFiles(new StaticFileOptions
 {

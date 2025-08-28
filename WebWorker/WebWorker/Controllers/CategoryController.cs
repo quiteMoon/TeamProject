@@ -16,14 +16,17 @@ namespace WebWorker.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         public async Task<IActionResult> GetAll()
         {
             var response = await _categoryService.GetAllAsync();
             if (!response.IsSuccess)
-                return BadRequest(response);
+                return BadRequest(response.Message);
 
-            return Ok(response);
+            return Ok(new {
+                message = response.Message,
+                payload = response.Payload
+            });
         }
 
         [HttpGet("{id}")]
@@ -31,42 +34,39 @@ namespace WebWorker.Controllers
         {
             var response = await _categoryService.GetByIdAsync(id);
             if (!response.IsSuccess)
-                return NotFound(response);
+                return NotFound(response.Message);
 
-            return Ok(response);
+            return Ok(new {
+                message = response.Message,
+                payload = response.Payload
+            });
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] CreateCategoryDto dto)
         {
-            var response = await _categoryService.CreateAsync(dto);
-            if (!response.IsSuccess)
-                return BadRequest(response);
+            if (dto == null || string.IsNullOrEmpty(dto.Name))
+                return BadRequest("Invalid category data.");
 
-            return StatusCode(201, response);
+            var response = await _categoryService.CreateAsync(dto);
+            return response.IsSuccess ? Ok(response.Message) : BadRequest(response.Message);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] UpdateCategoryDto dto)
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromForm] UpdateCategoryDto dto)
         {
-            if (id != dto.Id)
-                return BadRequest(ServiceResponse.Error("Id mismatch"));
+            if (dto == null)
+                return BadRequest("Invalid category data.");
 
             var response = await _categoryService.UpdateAsync(dto);
-            if (!response.IsSuccess)
-                return NotFound(response);
-
-            return Ok(response);
+            return response.IsSuccess ? Ok(response.Message) : BadRequest(response.Message);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _categoryService.DeleteAsync(id);
-            if (!response.IsSuccess)
-                return NotFound(response);
-
-            return Ok(response);
+            return response.IsSuccess ? Ok(response.Message) : BadRequest(response.Message);
         }
     }
 }
