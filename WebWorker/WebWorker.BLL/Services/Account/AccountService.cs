@@ -125,9 +125,9 @@ namespace WebWorker.BLL.Services.Account
                 user.Image = fileName;
             }
 
-            await _userManager.AddToRoleAsync(user, "User");
-
             var result = await _userManager.CreateAsync(user, dto.Password);
+
+            await _userManager.AddToRoleAsync(user, "User");
 
             return result.Succeeded ? ServiceResponse.Success("User registered successfully", 
                 await _jwtTokenManager.CrateJwtTokenAsync(user)) :

@@ -69,6 +69,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+PathSettings.Init(app.Services.GetRequiredService<IWebHostEnvironment>());
+
 // ?? Використовуємо CORS
 app.UseCors("AllowFrontend");
 
