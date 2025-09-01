@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { ChevronDown } from "lucide-react"; // стрілочка
-import BannerSlider from "../components/BannerSlider";
-import CoffeeSection from "../components/CoffeeSection";
-import NicePriceSection from "../components/NicePriceSection";
 
 // Список категорій із картинками
 const categories = [
@@ -30,7 +27,7 @@ const MainLayout: React.FC = () => {
       {/* Хедер */}
       <header className="bg-white shadow-sm border-b border-black/10 relative">
         <div className="w-full px-8 flex items-center justify-between h-16">
-          {/* Логотип зліва */}
+          {/* Логотип */}
           <Link to="/" className="flex items-center">
             <img
               src="https://www.mcdonalds.com/content/dam/sites/ua/nfl/icons/Logo_on_white_desktop_Small.jpg"
@@ -39,7 +36,7 @@ const MainLayout: React.FC = () => {
             />
           </Link>
 
-          {/* Меню по центру */}
+          {/* Меню */}
           <div className="relative">
             <button
               className="flex items-center gap-1 text-lg font-medium text-neutral-800 hover:text-red-600"
@@ -69,7 +66,7 @@ const MainLayout: React.FC = () => {
             )}
           </div>
 
-          {/* Іконка входу справа */}
+          {/* Іконка входу */}
           <Link to="/login">
             <img
               src="https://img.icons8.com/?size=100&id=26211&format=png&color=000000"
@@ -80,30 +77,10 @@ const MainLayout: React.FC = () => {
         </div>
       </header>
 
-      {/* Банер-слайдер */}
-      <BannerSlider
-        images={[
-          "https://www.mcdonalds.com/content/dam/sites/ua/nfl/hero/landings/seasonal/Slider_McFlurry_Pistachio.jpg",
-          "https://s7d1.scene7.com/is/image/mcdonalds/HM_Shrunk_SLIDER_june2025:accessible-carousel-desktop?resmode=sharp2",
-          "https://www.mcdonalds.com/content/dam/sites/ua/nfl/hero/landings/grimace/Slider_Grimace.png",
-          "https://s7d1.scene7.com/is/image/mcdonalds/UABurgers-slider:accessible-carousel-desktop?resmode=sharp2",
-          "https://www.mcdonalds.com/content/dam/sites/ua/nfl/hero/landings/chicken/Slider_ChickenFest_v3.png",
-        ]}
-      />
-
-      {/* Секція про каву */}
-      <CoffeeSection />
-
-      {/* Секція НайсПрайс */}
-      <NicePriceSection />
-
-      {/* Основний контент */}
-      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6">
+      {/* ВАЖЛИВО: Виводимо дочірні компоненти */}
+      <main className="flex-grow">
         <Outlet />
       </main>
-
-      {/* Футер */}
-      {/* ... (тут футер залишився як у тебе) ... */}
     </div>
   );
 };
