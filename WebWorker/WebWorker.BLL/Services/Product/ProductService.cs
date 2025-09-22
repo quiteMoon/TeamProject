@@ -32,9 +32,6 @@ namespace WebWorker.BLL.Services.Product
             if (dto.Categories.Length == 0)
                 return ServiceResponse.Error("At least one category must be specified");
 
-            if (dto.Ingredients.Length == 0)
-                return ServiceResponse.Error("At least one ingredient must be specified");
-
             var entity = new ProductEntity
             {
                 Name = dto.Name,
@@ -48,11 +45,13 @@ namespace WebWorker.BLL.Services.Product
 
             entity.Categories = categories;
 
-            var ingredients = await CheckPropertiesAsync(dto.Ingredients, _ingredientRepository.GetAll(), i => i.Name);
-            if (ingredients == null)
-                return ServiceResponse.Error("One or more specified ingredients do not exist");
-
-            entity.Ingredients = ingredients;
+            if (dto.Ingredients.Length != 0)
+            {
+                var ingredientCheck = await CheckPropertiesAsync(dto.Ingredients, _ingredientRepository.GetAll(), i => i.Name);
+                if (ingredientCheck == null)
+                    return ServiceResponse.Error("One or more specified ingredients do not exist");
+                entity.Ingredients = ingredientCheck;
+            }
 
             if (dto.Image != null)
             {
