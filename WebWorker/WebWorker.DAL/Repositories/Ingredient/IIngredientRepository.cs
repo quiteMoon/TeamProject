@@ -6,9 +6,9 @@ namespace WebWorker.DAL.Repositories.Ingredient
     {
         Task<bool> CreateAsync(IngredientEntity entity);
         Task<bool> UpdateAsync(IngredientEntity entity);
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(IngredientEntity entity);
         Task<IngredientEntity?> GetByIdAsync(int id);
         Task<IngredientEntity?> GetByNameAsync(string name);
-        IEnumerable<IngredientEntity> GetAll();
+        IQueryable<IngredientEntity> GetAll();
     }
 }

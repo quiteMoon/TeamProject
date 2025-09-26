@@ -4,36 +4,47 @@ using WebWorker.BLL.Managers.ImageManager;
 using WebWorker.BLL.Managers.JwtToken;
 using WebWorker.BLL.Services.Account;
 using WebWorker.BLL.Services.User;
+using WebWorker.BLL.Services.Category;
 using WebWorker.BLL.Settings;
 using WebWorker.DAL;
 using WebWorker.DAL.Initializer;
 using WebWorker.DAL.Repositories.User;
 using WebWorker.Data.Entities.Identity;
+using WebWorker.DAL.Repositories.Category;
+using WebWorker.DAL.Repositories.Ingredient;
+using WebWorker.BLL.Services.Ingredient;
+using WebWorker.DAL.Repositories.Product;
+using WebWorker.BLL.Services.Product;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add CORS policy
-
+// ?? Додаємо CORS (лише один раз)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // фронтенд
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
-// Add services to the container.
-
-// Register repositories and services
+// ?? Реєстрація репозиторіїв
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+// ?? Реєстрація сервісів
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IImageManager, ImageManager>();
 
+
+builder.Services.AddScoped<IImageManager, ImageManager>();
 builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
 
 builder.Services.AddControllers();
@@ -56,40 +67,35 @@ builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors();
-
 var app = builder.Build();
 
-app.UseCors(opt =>
-{
-    opt.AllowAnyHeader()
-       .AllowAnyMethod()
-       .AllowCredentials()
-       .WithOrigins(builder.Configuration["ClientAppUrl"]!);
-});
+PathSettings.Init(app.Services.GetRequiredService<IWebHostEnvironment>());
+
+// ?? Використовуємо CORS
+app.UseCors("AllowFrontend");
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Static Files
-if(!Directory.Exists(PathSettings.ImageDirectory))
+// ?? Статичні файли
+if (!Directory.Exists(PathSettings.ImageDirectory))
     Directory.CreateDirectory(PathSettings.ImageDirectory);
+
+Directory.CreateDirectory(PathSettings.UsersImages);
+Directory.CreateDirectory(PathSettings.IngredientsImages);
+Directory.CreateDirectory(PathSettings.CategoriesImages);
+Directory.CreateDirectory(PathSettings.ProductsImages);
 
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(PathSettings.ImageDirectory),
     RequestPath = $"/images"
 });
-//
-
-// Configure the HTTP request pipeline.
-
-app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Seed(); // Call the Seed method to initialize the database with roles and users
+app.Seed(); // Seeder для ролей/користувачів
 
 app.Run();

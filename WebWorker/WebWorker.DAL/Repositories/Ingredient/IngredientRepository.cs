@@ -18,17 +18,13 @@ namespace WebWorker.DAL.Repositories.Ingredient
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(IngredientEntity entity)
         {
-            var entity = await GetByIdAsync(id);
-            if (entity == null)
-                return false;
-
             _context.Ingredients.Remove(entity);
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public IEnumerable<IngredientEntity> GetAll()
+        public IQueryable<IngredientEntity> GetAll()
             => _context.Ingredients;
 
         public async Task<IngredientEntity?> GetByIdAsync(int id)

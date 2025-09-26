@@ -1,10 +1,13 @@
 import * as React from "react";
 import type { IUserRowProps } from "./UserInterface";
-import EnvConfig from "../../config/env";
-import { Link } from "react-router-dom";
+import EnvConfig from "../../../config/env";
+import { useNavigate } from "react-router-dom";
 
 
 const UserRow: React.FC<IUserRowProps> = ({user, initials}) => {
+
+    const navigate = useNavigate();
+
     return (
         <tr key={user.id} className="hover:bg-neutral-50/80 dark:hover:bg-white/5">
             <td className="px-5 py-4 text-sm text-neutral-600 dark:text-neutral-300 whitespace-nowrap">{user.id}</td>
@@ -15,7 +18,7 @@ const UserRow: React.FC<IUserRowProps> = ({user, initials}) => {
                         {user.image ? (
                             <img
                                 className="h-full w-full object-cover"
-                                src={user.image.startsWith("http") ? user.image : `${EnvConfig.API_URL}images/${user.image}`}
+                                src={user.image.startsWith("http") ? user.image : `${EnvConfig.API_URL}images/users/${user.image}`}
                                 alt={user.fullName}
                                 onError={(e) => {
                                     const target = e.currentTarget as HTMLImageElement;
@@ -52,14 +55,15 @@ const UserRow: React.FC<IUserRowProps> = ({user, initials}) => {
 
             <td className="px-5 py-4">
                 <div className="flex justify-end gap-2">
-                    <Link to={`/user/${user.id}`}
+                    <button 
+                        onClick={() => navigate(`/admin/users/edit`, {state: user})}
                         className="px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-900 text-white hover:opacity-90 dark:bg-white dark:text-neutral-900"
                     >
                         Редагувати
-                    </Link>
+                    </button>
                     <button
                         className="px-3 py-1.5 rounded-xl text-xs font-medium bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
-                        onClick={() => alert(`Delete user ${user.id}`)}
+                        onClick={() => navigate(`/admin/users/delete`, {state: user})}
                     >
                         Видалити
                     </button>

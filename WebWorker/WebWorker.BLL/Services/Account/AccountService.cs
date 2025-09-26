@@ -118,16 +118,16 @@ namespace WebWorker.BLL.Services.Account
 
             if (dto.Image != null)
             {
-                var fileName = await _imageManager.SaveImageAsync(dto.Image, PathSettings.ImageDirectory);
+                var fileName = await _imageManager.SaveImageAsync(dto.Image, PathSettings.UsersImages);
                 if (string.IsNullOrEmpty(fileName))
                     return ServiceResponse.Error("Failed to save user image");
 
                 user.Image = fileName;
             }
 
-            await _userManager.AddToRoleAsync(user, "User");
-
             var result = await _userManager.CreateAsync(user, dto.Password);
+
+            await _userManager.AddToRoleAsync(user, "User");
 
             return result.Succeeded ? ServiceResponse.Success("User registered successfully", 
                 await _jwtTokenManager.CrateJwtTokenAsync(user)) :
